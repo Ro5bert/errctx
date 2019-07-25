@@ -4,6 +4,12 @@ import (
 	"fmt"
 )
 
+type recoverableError struct{}
+
+func (recoverableError) Error() string {
+	return "recoverableError"
+}
+
 func doX() error {
 	// Try to do X, but it fails...
 	return New("could not do X: bad stuff happened")
@@ -24,7 +30,13 @@ func doY() error {
 func Example() {
 	//...
 	if err := doY(); err != nil {
-		fmt.Println(err.Error())
+		// You can inspect the root error and act depending on its type.
+		if _, ok := Root(err).(recoverableError); ok {
+			// If the error is a recoverableError (it never is), we do not prematurely exit the program.
+		} else {
+			fmt.Println(err.Error())
+			return // Premature program exit.
+		}
 	}
 	//...
 
