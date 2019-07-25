@@ -30,8 +30,6 @@ import (
 
 const joinSequence = ":"
 
-// TODO: strip context strings as soon as they're added
-
 // Root returns the "root" error for the given error, err. If err implements Error, then Root returns err.Root();
 // otherwise, Root simply returns err.
 func Root(err error) error {
@@ -96,7 +94,7 @@ func (err ctxerror) Root() error {
 }
 
 func (err *ctxerror) AddCtx(ctx string) {
-	err.ctx = append(err.ctx, ctx)
+	err.ctx = append(err.ctx, strings.TrimSpace(ctx))
 }
 
 func (err *ctxerror) AddCtxf(format string, a ...interface{}) {
@@ -105,12 +103,11 @@ func (err *ctxerror) AddCtxf(format string, a ...interface{}) {
 
 func (err ctxerror) Error() string {
 	builder := strings.Builder{}
-	last := strings.TrimSpace(err.ctx[len(err.ctx)-1])
+	last := err.ctx[len(err.ctx)-1]
 	builder.WriteString(last)
 	for i := len(err.ctx) - 2; i >= 0; i-- {
-		trimmedCtx := strings.TrimSpace(err.ctx[i])
-		writeCtxToBuilder(&builder, last, trimmedCtx)
-		last = trimmedCtx
+		writeCtxToBuilder(&builder, last, err.ctx[i])
+		last = err.ctx[i]
 	}
 	writeCtxToBuilder(&builder, last, err.root.Error())
 	return builder.String()
