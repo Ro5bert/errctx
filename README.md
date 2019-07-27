@@ -9,6 +9,8 @@ errctx produces error strings of the following form:
     
 Yes, it is essentially a glorified way of writing
 
-    err = errors.New(fmt.Sprintf("%s: %s", "context", err.Error()))
+    err = fmt.Errorf("%s: %s", "context", err.Error())
+    
+only one has the option to get the root error (and thus check its type) via `errctx.Root(err)`.
     
 See the in-source documentation for details. There is also a [contrived example](example_test.go) to take a look at.
