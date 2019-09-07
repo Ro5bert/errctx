@@ -1,4 +1,8 @@
 # errctx
+
+**This package is worthless in Go 1.13. It was also worthless to begin with seeing as the popular
+[pkg/errors](https://github.com/pkg/errors) has the same functionality.**
+
 errctx is a simple Go library for adding context (in the form of strings) to errors in situations when an error occurs
 and is propagated back through a long call chain; each function in the call chain may or may not want to add context as
 to where/why/how the error occurred.
